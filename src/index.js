@@ -2,12 +2,19 @@ import express from 'express'
 import usersRoutes from './routes/users.routes.js'
 import indexRoutes from './routes/index.routes.js'
 
+import { PORT } from './config.js'
+
 const app = express()
 app.use(express.json())
-
-const port = process.env.PORT || 3000
 
 app.use(indexRoutes)
 app.use('/api', usersRoutes)
 
-app.listen(port, () => console.log(`http://localhost:${port}`))
+app.use((req, res, next) => {
+  res.status(404).json({
+    error: 'endpoint not found',
+  })
+  next()
+})
+
+app.listen(PORT, () => console.log(`running on port ${PORT}`))
